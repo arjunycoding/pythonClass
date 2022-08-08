@@ -4,26 +4,35 @@ app = Flask(__name__)
 
 @app.route("/")
 def index():
-    print(request.args["name"])
-    return f"<h1>Hello {request.args['name']}</h1>"
+    return """
+        <p>Hello world</p>
+        <p><a href="/add">Go To Addition Calculator</a></p>
+    """
 
-@app.route("/<name>")
+@app.route("/greet/<name>")
 def hello_name(name):
     return f"Hello, {name}!"
 
 
-@app.route("/add/<int:a>/<int:b>")
-def add(a, b):
-    return f"{a} + {b} = {a + b}!"
+@app.route("/calculator", methods=["POST", "GET"])
+def add():
+    if request.method == "POST":
+        a = request.form.get("a", 0,  type=int)
+        b = request.form.get("b", 0,  type=int)
+        return f"{a} + {b} = {a + b}!"
+    else:
+        return """
+            <form method="POST">
+                <label for="form_a">First Number:</label>
+                <input type="number" id="form_a" name="a"/>
+                <br/>
+                <br/>
 
-@app.route("/add/<string:a>/<string:b>")
-def adds(a, b):
-    return f"{b} + {a} = {b + a}!"
+                <label for="form_b">Second Number:</label>
+                <input type="number" id="form_b" name="b"/>
+                <br/>
+                <br/>
 
-@app.route("/string/<string:s>")
-def string(s):
-    return f"You said the string {s}!"
-
-@app.route("/path/<path:p>")
-def path(p):
-    return f"You said the path {p}"
+                <input type="submit" value="Add"/>
+            </form>
+        """
