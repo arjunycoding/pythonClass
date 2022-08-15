@@ -1,38 +1,25 @@
-from flask import Flask, request
+# IMPORTS
+from flask import Flask, request, url_for, render_template
 
+# VARIABLES
 app = Flask(__name__)
 
+#  Home Page
 @app.route("/")
 def index():
-    return """
-        <p>Hello world</p>
-        <p><a href="/add">Go To Addition Calculator</a></p>
-    """
+    return render_template("index.html", title="Home")
 
+# Greeting Page
 @app.route("/greet/<name>")
 def hello_name(name):
-    return f"Hello, {name}!"
+    return render_template("greet.html", name=name, title="Hello")
 
-
-@app.route("/calculator", methods=["POST", "GET"])
+# Addition Calculator
+@app.route("/addition", methods=["POST", "GET"])
 def add():
+    result = None
     if request.method == "POST":
         a = request.form.get("a", 0,  type=int)
         b = request.form.get("b", 0,  type=int)
-        return f"{a} + {b} = {a + b}!"
-    else:
-        return """
-            <form method="POST">
-                <label for="form_a">First Number:</label>
-                <input type="number" id="form_a" name="a"/>
-                <br/>
-                <br/>
-
-                <label for="form_b">Second Number:</label>
-                <input type="number" id="form_b" name="b"/>
-                <br/>
-                <br/>
-
-                <input type="submit" value="Add"/>
-            </form>
-        """
+        result = (a, b, a+b)
+    return render_template("add.html", result=result) 
